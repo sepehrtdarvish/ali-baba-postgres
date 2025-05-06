@@ -26,10 +26,6 @@ CREATE TABLE Services (
     air_conditioning BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE Company (
-    id UUID PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-);
 
 CREATE TABLE Vehicle (
     id UUID PRIMARY KEY,
