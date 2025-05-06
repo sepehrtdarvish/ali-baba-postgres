@@ -47,6 +47,7 @@ CREATE TABLE Ticket (
     vehicle UUID NOT NULL REFERENCES Vehicle(id) ON DELETE CASCADE,
     catering TEXT,
     is_canceld BOOLEAN
+    who_canceld UUID REFERENCES Users(id)
 );
 
 CREATE TABLE Seat (
