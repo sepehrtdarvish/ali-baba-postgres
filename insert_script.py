@@ -2,6 +2,7 @@ import psycopg2
 from faker import Faker
 import uuid
 import random
+import bcrypt
 
 conn = psycopg2.connect(
     dbname="postgres",
@@ -23,6 +24,29 @@ vehicle_ids = {}
 seat_ids = {}
 
 # create users
+for _ in range(10):
+    user_id = str(uuid.uuid4())
+    username = faker.user_name()
+    password = faker.password(length=12)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    email = faker.unique.email()
+    is_admin = random.choice([True, False])
+
+    if is_admin:
+        admin_ids.append(user_id)
+    else:
+        user_ids.append(user_id)
+
+    home_town = faker.city()
+    is_active = random.choice([True, False])
+
+    cur.execute("""
+        INSERT INTO Users (
+            id, Username, Password, email, is_admin, home_town, is_active
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """, (user_id, username, hashed_password, email, is_admin, home_town, is_active))
+
 for _ in range(10):
     user_id = str(uuid.uuid4())
     username = faker.user_name()
