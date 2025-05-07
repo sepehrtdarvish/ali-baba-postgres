@@ -81,9 +81,10 @@ CREATE TABLE Report (
     description TEXT NOT NULL,
     user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
     inspector UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+	ticket_id UUID NOT NULL REFERENCES Ticket(id) ON DELETE CASCADE,	
     is_proccessed BOOLEAN DEFAULT FALSE,
     proccessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 Drop table Location, Report, Reservation, Seat, Services, Ticket, Transaction, Users, Vehicle;
-SELECT * from Ticket;
+SELECT * from Report;
