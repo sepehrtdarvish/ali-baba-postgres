@@ -33,27 +33,6 @@ for _ in range(10):
     email = faker.unique.email()
     is_admin = random.choice([True, False])
 
-    if is_admin:
-        admin_ids.append(user_id)
-    else:
-        user_ids.append(user_id)
-
-    home_town = faker.city()
-    is_active = random.choice([True, False])
-
-    cur.execute("""
-        INSERT INTO Users (
-            id, Username, Password, email, is_admin, home_town, is_active
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (user_id, username, hashed_password, email, is_admin, home_town, is_active))
-
-for _ in range(10):
-    user_id = str(uuid.uuid4())
-    username = faker.user_name()
-    password = faker.password(length=12)
-    email = faker.unique.email()
-
-    is_admin = random.choice([True, False])
     if is_admin == True:
         admin_ids.append(user_id)
     else:
@@ -66,7 +45,7 @@ for _ in range(10):
         INSERT INTO Users (
             id, Username, Password, email, is_admin, home_town, is_active
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (user_id, username, password, email, is_admin, home_town, is_active))
+    """, (user_id, username, hashed_password, email, is_admin, home_town, is_active))
 
 
 # create locations
@@ -148,14 +127,14 @@ for _ in range(10):
     cur.execute("""
         INSERT INTO Ticket (
             id, origin, destination, start_at, duriation, delay,
-            class, vehicle, catering, is_canceld
+            class, vehicle, catering, is_canceld, who_canceled
         ) VALUES (
             %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s
+            %s, %s, %s, %s, %s
         )
     """, (
         ticket_id, origin, destination, start_at, duration, delay,
-        ticket_class, vehicle_id, catering, is_canceled
+        ticket_class, vehicle_id, catering, is_canceled, who_canceled
     ))
 
     # Create Seat

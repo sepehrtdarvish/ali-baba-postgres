@@ -32,7 +32,6 @@ CREATE TABLE Vehicle (
     name VARCHAR(50) NOT NULL,
     capacity INT NOT NULL CHECK (capacity > 0),
     service UUID REFERENCES Services(id),
-    company UUID REFERENCES Company(id),
     type VARCHAR(50)
 );
 
@@ -67,7 +66,7 @@ CREATE TABLE Transaction (
 
 CREATE TABLE Reservation (
     id UUID PRIMARY KEY,
-    user UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
     seat UUID REFERENCES Seat(id),
     seat_number VARCHAR(50),
     transaction UUID DEFAULT NULL REFERENCES Transaction(id) ON DELETE SET NULL,
@@ -86,4 +85,5 @@ CREATE TABLE Report (
     proccessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+Drop table Location, Report, Reservation, Seat, Services, Ticket, Transaction, Users, Vehicle;
+SELECT * from Ticket;
