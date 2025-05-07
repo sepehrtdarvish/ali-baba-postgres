@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 
 # Ignore environment variables and secrets
+env/
 .env
 *.env
 *.venv

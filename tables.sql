@@ -46,8 +46,8 @@ CREATE TABLE Ticket (
     class VARCHAR(20) CHECK (class IN ('economic', 'VIP', 'business')),
     vehicle UUID NOT NULL REFERENCES Vehicle(id) ON DELETE CASCADE,
     catering TEXT,
-    is_canceld BOOLEAN
-    who_canceld UUID REFERENCES Users(id)
+    is_canceld BOOLEAN,
+    who_canceled UUID REFERENCES Users(id)
 );
 
 CREATE TABLE Seat (
@@ -67,7 +67,7 @@ CREATE TABLE Transaction (
 
 CREATE TABLE Reservation (
     id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
     seat UUID REFERENCES Seat(id),
     seat_number VARCHAR(50),
     transaction UUID DEFAULT NULL REFERENCES Transaction(id) ON DELETE SET NULL,
@@ -86,3 +86,4 @@ CREATE TABLE Report (
     proccessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
