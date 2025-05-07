@@ -2,6 +2,7 @@ import psycopg2
 from faker import Faker
 import uuid
 import random
+import bcrypt
 
 conn = psycopg2.connect(
     dbname="postgres",
@@ -28,6 +29,7 @@ for _ in range(10):
     user_id = str(uuid.uuid4())
     username = faker.user_name()
     password = faker.password(length=12)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     email = faker.unique.email()
 
     is_admin = True
@@ -40,7 +42,7 @@ for _ in range(10):
         INSERT INTO Users (
             id, Username, Password, email, is_admin, home_town, is_active
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (user_id, username, password, email, is_admin, home_town, is_active))
+    """, (user_id, username, hashed_password, email, is_admin, home_town, is_active))
 
 
 # create users
@@ -48,8 +50,14 @@ for _ in range(1000):
     user_id = str(uuid.uuid4())
     username = faker.user_name()
     password = faker.password(length=12)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     email = faker.unique.email()
 
+    is_admin = False
+    user_ids.append(user_id)
+
+    email = faker.unique.email()
+    
     is_admin = False
     user_ids.append(user_id)
 
@@ -60,7 +68,7 @@ for _ in range(1000):
         INSERT INTO Users (
             id, Username, Password, email, is_admin, home_town, is_active
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (user_id, username, password, email, is_admin, home_town, is_active))
+    """, (user_id, username, hashed_password, email, is_admin, home_town, is_active))
 
 
 # create locations
@@ -142,14 +150,14 @@ for _ in range(10):
     cur.execute("""
         INSERT INTO Ticket (
             id, origin, destination, start_at, duriation, delay,
-            class, vehicle, catering, is_canceld
+            class, vehicle, catering, is_canceld, who_canceled
         ) VALUES (
             %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s
+            %s, %s, %s, %s, %s
         )
     """, (
         ticket_id, origin, destination, start_at, duration, delay,
-        ticket_class, vehicle_id, catering, is_canceled
+        ticket_class, vehicle_id, catering, is_canceled, who_canceled
     ))
 
     # Create Seat
