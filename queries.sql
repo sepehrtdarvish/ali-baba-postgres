@@ -1,4 +1,4 @@
-
+-- 1 checked
 SELECT username, email
 FROM Users u
 WHERE NOT EXISTS (
@@ -7,10 +7,12 @@ WHERE NOT EXISTS (
     WHERE r.user_id = u.id
 );
 
+-- 2 checked
 SELECT DISTINCT u.username, u.email
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id;
 
+-- 3 checked
 SELECT
     u.username,
     DATE_TRUNC('month', t.created_at) AS month,
@@ -19,23 +21,26 @@ FROM Users u
 JOIN Reservation r ON u.id = r.user_id
 JOIN Transaction t ON t.id = r.transaction
 GROUP BY u.username, month
-ORDER BY month;
+ORDER BY u.username;
 
-SELECT u.username, l.city
+-- 4 checked
+SELECT u.username
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
 JOIN Seat s ON s.id = r.seat
 JOIN Ticket t ON s.ticket = t.id
 JOIN Location l ON l.id = t.origin
-GROUP BY u.username, l.city
-HAVING COUNT(*) = 1;
+GROUP BY u.username
+HAVING COUNT(*) = COUNT(DISTINCT l.city);
 
+-- 5 checked
 SELECT u.*
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
 ORDER BY r.created_at DESC
 LIMIT 1;
 
+-- 6 checked
 SELECT u.email
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
@@ -51,11 +56,13 @@ HAVING SUM(t.paid_amount) > (
     ) sub
 );
 
+-- 7 checked
 SELECT v.type, COUNT(*) AS ticket_count
 FROM Ticket t
 JOIN Vehicle v ON t.vehicle = v.id
 GROUP BY v.type;
 
+-- 8 checked
 SELECT u.username, COUNT(*) AS ticket_count
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
@@ -64,12 +71,14 @@ GROUP BY u.username
 ORDER BY ticket_count DESC
 LIMIT 3;
 
+-- 9 checked
 SELECT l.city, COUNT(*) AS sold_tickets
 FROM Ticket t
 JOIN Location l ON l.id = t.origin
-WHERE l.province = 'Tehran'
+WHERE l.province = 'Illinois'
 GROUP BY l.city;
 
+-- 10 checked
 SELECT DISTINCT l.city
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
@@ -78,26 +87,29 @@ JOIN Ticket t ON s.ticket = t.id
 JOIN Location l ON t.origin = l.id
 WHERE u.signup_date = (SELECT MIN(signup_date) FROM Users);
 
+-- 11 checked
 SELECT username
 FROM Users
 WHERE is_admin = TRUE;
 
+-- 12 checked
 SELECT u.username
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
 GROUP BY u.username
 HAVING COUNT(*) >= 2;
 
-SELECT u.username
+-- 13 checked
+SELECT Distinct u.username
 FROM Users u
 JOIN Reservation r ON u.id = r.user_id
 JOIN Seat s ON r.seat = s.id
 JOIN Ticket t ON s.ticket = t.id
 JOIN Vehicle v ON t.vehicle = v.id
-WHERE v.type = 'train'
-GROUP BY u.username
+GROUP BY u.username, v.type
 HAVING COUNT(*) <= 2;
 
+-- 14 
 SELECT u.email
 FROM Users u
 WHERE NOT EXISTS (
@@ -112,48 +124,53 @@ WHERE NOT EXISTS (
     WHERE r.user_id = u.id
 );
 
-SELECT t.*
-FROM Ticket t
-JOIN Seat s ON s.ticket = t.id
-JOIN Reservation r ON s.id = r.seat
+-- 15 checked
+SELECT r.*
+from Reservation r 
 WHERE DATE(r.created_at) = CURRENT_DATE
 ORDER BY r.created_at;
 
-SELECT ticket, COUNT(*) AS ticket_count
-FROM Seat
-GROUP BY ticket
-ORDER BY ticket_count DESC
+-- 16 checked
+SELECT r.ticket, COUNT(*) AS reservation_count
+FROM Reservation r
+JOIN Seat s ON r.seat = s.id
+GROUP BY s.ticket
+ORDER BY reservation_count DESC
 OFFSET 1 LIMIT 1;
 
+-- 17 checked
 SELECT u.username, COUNT(*) AS cancellations,
        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS cancel_percent
 FROM Users u
 JOIN Ticket t ON u.id = t.who_canceled
-WHERE u.is_admin = TRUE
 GROUP BY u.username
 ORDER BY cancellations DESC
 LIMIT 1;
 
+-- 18 
 UPDATE Users
-SET username = 'Reddington'
+SET username = 'Raddington'
 WHERE id = (
-    SELECT who_canceled
-    FROM Ticket
-    WHERE is_canceld = TRUE
-    GROUP BY who_canceled
+    SELECT user_id
+    FROM Reservation
+    WHERE is_cancelled = TRUE
+    GROUP BY user_id
     ORDER BY COUNT(*) DESC
     LIMIT 1
 );
 
-DELETE FROM Ticket
-WHERE is_canceld = TRUE
-  AND who_canceled = (
+-- 19 checked
+DELETE FROM Reservation r
+WHERE r.is_cancelled = TRUE
+  AND user_id = (
     SELECT id FROM Users WHERE username = 'Reddington'
 );
 
-DELETE FROM Ticket
-WHERE is_canceld = TRUE;
+-- 20 checked
+DELETE FROM Reservation r
+WHERE r.is_cancelled = TRUE;
 
+-- 21 checked
 UPDATE Seat
 SET price = price * 0.9
 WHERE ticket IN (
@@ -164,6 +181,7 @@ WHERE ticket IN (
       AND DATE(t.start_at) = CURRENT_DATE
 );
 
+-- 22 checked
 SELECT subject, COUNT(*) AS report_count
 FROM Report
 GROUP BY subject

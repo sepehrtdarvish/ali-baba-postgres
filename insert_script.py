@@ -151,10 +151,10 @@ for _ in range(10):
     cur.execute("""
         INSERT INTO Ticket (
             id, origin, destination, start_at, duriation, delay,
-            class, vehicle, catering, is_canceld, who_canceled
+            class, vehicle, catering, is_canceld, who_canceled, created_at
         ) VALUES (
             %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s, %s
+            %s, %s, %s, %s, %s, %s
         )
     """, (
         ticket_id, origin, destination, start_at, duration, delay,

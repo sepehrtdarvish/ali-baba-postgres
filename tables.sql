@@ -86,5 +86,8 @@ CREATE TABLE Report (
     proccessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 Drop table Location, Report, Reservation, Seat, Services, Ticket, Transaction, Users, Vehicle;
-SELECT * from Report;
+SELECT l.province, l.city from location l
+Group by l.province, l.city
+Order by l.province;
